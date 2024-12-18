@@ -1,56 +1,21 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+import { CartContext } from '../store/ContextProvider';
 import { Container, Row, Col, Card, Button, ButtonGroup, Form } from 'react-bootstrap';
 
 function Products() {
 
-  const products = [
-    {
-      id: 1,
-      name: 'Product A',
-      description: 'This is the description for Product A.',
-      price: 100,
-      large: 50,
-      medium: 20,
-      small: 10,
-
-    },
-    {
-      id: 2,
-      name: 'Product B',
-      description: 'This is the description for Product B.',
-      price: 200,
-      large: 50,
-      medium: 20,
-      small: 10,
-    },
-    {
-      id: 3,
-      name: 'Product C',
-      description: 'This is the description for Product C.',
-      price: 150,
-      large: 50,
-      medium: 20,
-      small: 10,
-    },
-    {
-        id: 4,
-        name: 'Product d',
-        description: 'This is the description for Product d.',
-        price: 150,
-        large: 50,
-        medium: 20,
-        small: 10,
-      }
-  ];
-
-   function handleAddToCart(){
-    
+  const cartCtx = useContext(CartContext) ;
+ 
+   function handleAddToCart(event,prod,size){
+    event.preventDefault();
+    if(Number(prod[size]) === 0) return
+    cartCtx.setCartItems(prod,size)
    }
 
   return (
     <Container className="my-4">
       <Row className="justify-content-center">
-        {products.map((product) => (
+        {cartCtx.products.map((product) => (
           <Col key={product.id} md={4} className="mb-4">
             <Card>
               <Card.Body>
@@ -64,19 +29,19 @@ function Products() {
                     <ButtonGroup>
                       <Button
                         variant="outline-primary"
-                        onClick={() => handleAddToCart(product, 'small')}
+                        onClick={(event) => handleAddToCart(event,product, 'small')}
                       >
                       Buy Small {product.small}
                       </Button>
                       <Button
                         variant="outline-primary"
-                        onClick={() => handleAddToCart(product, 'medium')}
+                        onClick={(event) => handleAddToCart(event,product, 'medium')}
                       >
                       Buy Medium {product.medium}
                       </Button>
                       <Button
                         variant="outline-primary"
-                        onClick={() => handleAddToCart(product, 'large')}
+                        onClick={(event) => handleAddToCart(event,product, 'large')}
                       >
                        Buy Large {product.large}
                       </Button>

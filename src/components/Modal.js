@@ -1,17 +1,16 @@
-import React,{useState} from 'react'
+import React,{useContext} from 'react'
 import { Modal,Container,Row,Col,Button } from 'react-bootstrap'
+import { CartContext } from '../store/ContextProvider';
 
 const Modals = ({showCart,setShowCart}) => {
 
-    const [cart, setCart] = useState([
-        { id: 1, name: 'Product A', price: 100, quantity: 2 },
-        { id: 2, name: 'Product B', price: 200, quantity: 1 },
-        { id: 3, name: 'Product C', price: 150, quantity: 3 },
-      ]);
-  
+      const cartCtx = useContext(CartContext)
+      const cart = cartCtx.cartItems;
     
       const handleCloseCart = () => setShowCart(false);
 
+      const total = cartCtx.cartItems.reduce((mis,cur)=> mis+= (Number(cur.price) * (Number(cur.large || 0) + Number(cur.medium || 0) + Number(cur.small||0))),0)
+    
   return (
     <>
         <Modal show={showCart} onHide={handleCloseCart} size="lg">
@@ -34,10 +33,12 @@ const Modals = ({showCart,setShowCart}) => {
                             <p>Price: ${item.price}</p>
                           </div>
                           <div className="d-flex align-items-center">
-                            <span>Qty: {item.quantity}</span>
+                            <span>Large: {item.large}</span> &nbsp;&nbsp;
+                            <span>Medium: {item.medium}</span>&nbsp;&nbsp;
+                            <span>Small: {item.small}</span>&nbsp;&nbsp;
                           </div>
                           <div>
-                            <strong>${item.price * item.quantity}</strong>
+                            <strong>${Number(item.price) * (Number(item.large || 0) + Number(item.medium || 0) + Number(item.small || 0))}</strong>
                           </div>
                         </li>
                       ))}
@@ -45,8 +46,8 @@ const Modals = ({showCart,setShowCart}) => {
                   </Col>
                 </Row>
                 <Row className="mt-3">
-                  <Col>
-                    <h5>Total: ${6}</h5>
+                  <Col className="d-flex justify-content-end">
+                    <h5>Total: ${total}</h5>
                   </Col>
                 </Row>
               </>

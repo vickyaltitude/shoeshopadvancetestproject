@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Container, Row, Col, Form, Button, Navbar, Nav } from 'react-bootstrap';
 import Modal from './Modal';
+import { CartContext } from '../store/ContextProvider';
 
 function NavBar() {
+   
+  const cartCtx = useContext(CartContext)
+  const cartNumbers = cartCtx.cartItems.length > 0 ? cartCtx.cartItems.reduce((mis,cur) => mis+= (Number(cur.large || 0) + Number(cur.small || 0) + Number(cur.medium ||0)),0) : 0;
+
+
   const [formData, setFormData] = useState({
     prodName: '',
     prodDesc: '',
@@ -24,8 +30,16 @@ function NavBar() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Form data submitted:', formData);
+
+    cartCtx.setProducts(formData)
+    setFormData(()=> ({
+      prodName: '',
+      prodDesc: '',
+      prodPrice:'',
+      prodLarge: '',
+      prodMedium: '',
+      prodSmall: ''
+    }))
   };
 
   const handleCartClick = () => {
@@ -45,6 +59,7 @@ function NavBar() {
             <Row>
               <Col md={3}>
                 <Form.Control
+                 required
                   type="text"
                   placeholder="Name of the product"
                   name="prodName"
@@ -55,6 +70,7 @@ function NavBar() {
               </Col>
               <Col md={3}>
                 <Form.Control
+                 required
                   type="text"
                   placeholder="Description"
                   name="prodDesc"
@@ -65,6 +81,7 @@ function NavBar() {
               </Col>
               <Col md={1}>
                 <Form.Control
+                 required
                   type= 'number'
                   placeholder='price'
                   min={0}
@@ -76,6 +93,7 @@ function NavBar() {
               </Col>
               <Col md={1}>
                 <Form.Control
+                 required
                   type= 'number'
                   placeholder='large quantities'
                   min={0}
@@ -89,6 +107,7 @@ function NavBar() {
               <Col md={1}>
                 <Form.Control
                   type="number"
+                  required
                   name="prodMedium"
                   min={0}
                    placeholder='medium quantities'
@@ -99,6 +118,7 @@ function NavBar() {
               </Col>
               <Col md={1}>
                 <Form.Control
+                 required
                   type="number"
                   name="prodSmall"
                   min={0}
@@ -119,7 +139,7 @@ function NavBar() {
                   onClick={handleCartClick}
                   className="mr-2"
                 >
-                  Cart {0}
+                  Cart {cartNumbers}
                 </Button>
               </Col>
             </Row>
